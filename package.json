@@ -1,0 +1,15 @@
+{
+	"name": "fila-tauri",
+	"author": "Paul Gordon",
+	"description": "Tauri backend for Fila",
+	"version": "1.0.0",
+	"main": "fila-tauri.js",
+	"scripts": {
+		"tauri": "tauri",
+		"bundle": "tsc -p tsconfig.release.json && terser ./+build/fila-tauri.debug.js > ./+build/fila-tauri.min.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"tauri-plugin-fs-watch-api": "github:tauri-apps/tauri-plugin-fs-watch#1f460724c82cc7e0ab38cf05443fe00e07321459"
+	}
+}
