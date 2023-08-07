@@ -2,16 +2,35 @@
 class FilaTauri extends Fila
 {
 	/** */
-	private static _ = (() => Fila.construct = async () =>
+	static async use()
 	{
-		if ("__TAURI__" in globalThis)
+		let path: typeof import("@tauri-apps/api").path | null = null;
+			
+		try
 		{
-			const path = (globalThis as any).__TAURI__.path;
-			const cwd: string = await path.appDataDir();
-			const tmp: string = await path.appCacheDir();
-			Fila.setDefaults(FilaTauri, path.sep, cwd, tmp);
+			path = (globalThis as any).__TAURI__.path as typeof import("@tauri-apps/api").path;
 		}
-	})();
+		catch (e)
+		{
+			console.log("withGlobalTauri is not set");
+			return;
+		}
+		
+		let cwd = "/";
+		let tmp = "/";
+		
+		try
+		{
+			cwd = await path.appDataDir();
+			tmp = await path.appCacheDir();
+		}
+		catch (e)
+		{
+			console.error("The Tauri environment doesn't have access to the path APIs");
+		}
+		
+		Fila.setDefaults(FilaTauri, path?.sep || "", cwd, tmp);
+	}
 	
 	/** */
 	private readonly fs: typeof import("@tauri-apps/api").fs = 
