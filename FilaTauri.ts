@@ -1,8 +1,7 @@
 
-class FilaTauri extends Fila
+namespace FilaTauri
 {
-	/** */
-	static async use()
+	export async function use()
 	{
 		let path: typeof import("@tauri-apps/api").path | null = null;
 			
@@ -29,208 +28,209 @@ class FilaTauri extends Fila
 			console.error("The Tauri environment doesn't have access to the path APIs");
 		}
 		
-		Fila.setDefaults(FilaTauri, path?.sep || "", cwd, tmp);
-	}
-	
-	/** */
-	private readonly fs: typeof import("@tauri-apps/api").fs = 
-		(globalThis as any).__TAURI__.fs;
-	
-	/** */
-	readText()
-	{
-		return this.fs.readTextFile(this.path);
-	}
-	
-	/** */
-	readBinary()
-	{
-		return this.fs.readBinaryFile(this.path);
-	}
-	
-	/** */
-	async readDirectory()
-	{
-		const fileNames = await this.fs.readDir(this.path);
-		const filas: Fila[] = [];
-		
-		for (const fileName of fileNames)
-			if (fileName.name !== ".DS_Store")
-				filas.push(Fila.new(this.path, fileName.name || ""));
-		
-		return filas;
-	}
-	
-	/** */
-	async writeText(text: string, options?: Fila.IWriteTextOptions)
-	{
-		try
+		class FilaTauri extends Fila
 		{
-			const up = this.up();
-			if (!await up.exists())
-				await up.writeDirectory();
+			/** */
+			static _ = Fila.setDefaults(FilaTauri, path?.sep || "", cwd, tmp);
 			
-			await this.fs.writeTextFile(this.path, text, {
-				append: options?.append
-			});
-		}
-		catch (e)
-		{
-			debugger;
-		}
-	}
-	
-	/** */
-	async writeBinary(arrayBuffer: ArrayBuffer)
-	{
-		await this.up().writeDirectory();
-		await this.fs.writeBinaryFile(this.path, arrayBuffer);
-	}
-	
-	/** */
-	async writeDirectory()
-	{
-		this.fs.createDir(this.path, { recursive: true });
-	}
-	
-	/**
-	 * Writes a symlink file at the location represented by the specified
-	 * Fila object, to the location specified by the current Fila object.
-	 */
-	async writeSymlink(at: Fila)
-	{
-		return null as any;
-	}
-	
-	/**
-	 * Deletes the file or directory that this Fila object represents.
-	 */
-	async delete(): Promise<Error | void>
-	{
-		if (await this.isDirectory())
-		{
-			return new Promise<Error | void>(async resolve =>
+			/** */
+			private readonly fs: typeof import("@tauri-apps/api").fs = 
+				(globalThis as any).__TAURI__.fs;
+			
+			/** */
+			readText()
 			{
-				await this.fs.removeDir(this.path, { recursive: true });
-				resolve();
-			});
-		}
-		
-		await this.fs.removeFile(this.path);
-	}
-	
-	/** */
-	move(target: Fila)
-	{
-		return null as any;
-	}
-	
-	/** */
-	async copy(target: Fila)
-	{
-		if (await target.isDirectory())
-			throw "Copying directories is not implemented.";
-		
-		await this.fs.copyFile(this.path, target.path);
-	}
-	
-	/** */
-	protected watchProtected(
-		recursive: boolean,
-		callbackFn: (event: Fila.Event, fila: Fila) => void)
-	{
-		let un: Function | null = null;
-		
-		(async () =>
-		{
-			un = await FilaTauri.watchInternal(this.path, {}, async ev =>
+				return this.fs.readTextFile(this.path);
+			}
+			
+			/** */
+			readBinary()
 			{
-				if (!un)
-					return;
+				return this.fs.readBinaryFile(this.path);
+			}
+			
+			/** */
+			async readDirectory()
+			{
+				const fileNames = await this.fs.readDir(this.path);
+				const filas: Fila[] = [];
 				
-				const payload = ev.payload.payload;
-				if (typeof payload !== "string")
-					return;
+				for (const fileName of fileNames)
+					if (fileName.name !== ".DS_Store")
+						filas.push(Fila.new(this.path, fileName.name || ""));
 				
-				const fila = Fila.new(ev.payload.payload);
+				return filas;
+			}
+			
+			/** */
+			async writeText(text: string, options?: Fila.IWriteTextOptions)
+			{
+				try
+				{
+					const up = this.up();
+					if (!await up.exists())
+						await up.writeDirectory();
+					
+					await this.fs.writeTextFile(this.path, text, {
+						append: options?.append
+					});
+				}
+				catch (e)
+				{
+					debugger;
+				}
+			}
+			
+			/** */
+			async writeBinary(arrayBuffer: ArrayBuffer)
+			{
+				await this.up().writeDirectory();
+				await this.fs.writeBinaryFile(this.path, arrayBuffer);
+			}
+			
+			/** */
+			async writeDirectory()
+			{
+				this.fs.createDir(this.path, { recursive: true });
+			}
+			
+			/**
+			 * Writes a symlink file at the location represented by the specified
+			 * Fila object, to the location specified by the current Fila object.
+			 */
+			async writeSymlink(at: Fila)
+			{
+				return null as any;
+			}
+			
+			/**
+			 * Deletes the file or directory that this Fila object represents.
+			 */
+			async delete(): Promise<Error | void>
+			{
+				if (await this.isDirectory())
+				{
+					return new Promise<Error | void>(async resolve =>
+					{
+						await this.fs.removeDir(this.path, { recursive: true });
+						resolve();
+					});
+				}
 				
-				if (ev.type === "NoticeWrite" || ev.type === "Write")
-					callbackFn(Fila.Event.modify, fila);
+				await this.fs.removeFile(this.path);
+			}
+			
+			/** */
+			move(target: Fila)
+			{
+				return null as any;
+			}
+			
+			/** */
+			async copy(target: Fila)
+			{
+				if (await target.isDirectory())
+					throw "Copying directories is not implemented.";
 				
-				else if (ev.type === "NoticeRemove" || ev.type === "Remove")
-					callbackFn(Fila.Event.delete, fila);
+				await this.fs.copyFile(this.path, target.path);
+			}
+			
+			/** */
+			protected watchProtected(
+				recursive: boolean,
+				callbackFn: (event: Fila.Event, fila: Fila) => void)
+			{
+				let un: Function | null = null;
 				
-				else if (ev.type === "Create" || ev.type === "Rename")
-					callbackFn(Fila.Event.modify, fila);
-			});
-		})();
-		
-		return () =>
-		{
-			// This is hacky... the interface expects a function to be
-			// returned rather than a promise that resolves to one,
-			// so this waits 100ms to call the un() function if this unwatch
-			// function is invoked immediately after calling watch().
-			if (un)
-				un();
-			else
-				setTimeout(() => un?.(), 100);
-		};
+				(async () =>
+				{
+					un = await watchInternal(this.path, {}, async ev =>
+					{
+						if (!un)
+							return;
+						
+						const payload = ev.payload.payload;
+						if (typeof payload !== "string")
+							return;
+						
+						const fila = Fila.new(ev.payload.payload);
+						
+						if (ev.type === "NoticeWrite" || ev.type === "Write")
+							callbackFn(Fila.Event.modify, fila);
+						
+						else if (ev.type === "NoticeRemove" || ev.type === "Remove")
+							callbackFn(Fila.Event.delete, fila);
+						
+						else if (ev.type === "Create" || ev.type === "Rename")
+							callbackFn(Fila.Event.modify, fila);
+					});
+				})();
+				
+				return () =>
+				{
+					// This is hacky... the interface expects a function to be
+					// returned rather than a promise that resolves to one,
+					// so this waits 100ms to call the un() function if this unwatch
+					// function is invoked immediately after calling watch().
+					if (un)
+						un();
+					else
+						setTimeout(() => un?.(), 100);
+				};
+			}
+			
+			/** */
+			async rename(newName: string)
+			{
+				// Note that the "renameFile" method actually works on directories
+				return this.fs.renameFile(this.path, this.up().down(newName).path);
+			}
+			
+			/** */
+			async exists()
+			{
+				return this.fs.exists(this.path);
+			}
+			
+			/** */
+			async getSize()
+			{
+				return (await this.getMeta()).size;
+			}
+			
+			/** */
+			async getModifiedTicks()
+			{
+				return (await this.getMeta()).modifiedAt;
+			}
+			
+			/** */
+			async getCreatedTicks()
+			{
+				return (await this.getMeta()).createdAt;
+			}
+			
+			/** */
+			async getAccessedTicks()
+			{
+				return (await this.getMeta()).accessedAt;
+			}
+			
+			/** */
+			async isDirectory()
+			{
+				return (await this.getMeta()).isDir;
+			}
+			
+			/** */
+			private async getMeta()
+			{
+				return this._meta || (this._meta = await getMetadata(this.path));
+			}
+			private _meta: Metadata | null = null;
+		}
 	}
 	
-	/** */
-	async rename(newName: string)
-	{
-		// Note that the "renameFile" method actually works on directories
-		return this.fs.renameFile(this.path, this.up().down(newName).path);
-	}
-	
-	/** */
-	async exists()
-	{
-		return this.fs.exists(this.path);
-	}
-	
-	/** */
-	async getSize()
-	{
-		return (await this.getMeta()).size;
-	}
-	
-	/** */
-	async getModifiedTicks()
-	{
-		return (await this.getMeta()).modifiedAt;
-	}
-	
-	/** */
-	async getCreatedTicks()
-	{
-		return (await this.getMeta()).createdAt;
-	}
-	
-	/** */
-	async getAccessedTicks()
-	{
-		return (await this.getMeta()).accessedAt;
-	}
-	
-	/** */
-	async isDirectory()
-	{
-		return (await this.getMeta()).isDir;
-	}
-	
-	/** */
-	private async getMeta()
-	{
-		return this._meta || (this._meta = await FilaTauri.getMetadata(this.path));
-	}
-	private _meta: FilaTauri.Metadata | null = null;
-}
-
-namespace FilaTauri
-{
 	//@ts-ignore
 	if (!("__TAURI__" in globalThis)) return;
 	
@@ -356,7 +356,7 @@ namespace FilaTauri
 	}
 	
 	/** @internal */
-	export function getMetadata(path: string): Promise<Metadata>
+	function getMetadata(path: string): Promise<Metadata>
 	{
 		return tauri.invoke("plugin:fs-extra|metadata", { path });
 	}
