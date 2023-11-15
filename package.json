@@ -11,5 +11,9 @@
 	"license": "MIT",
 	"dependencies": {
 		"tauri-plugin-fs-watch-api": "github:tauri-apps/tauri-plugin-fs-watch#1f460724c82cc7e0ab38cf05443fe00e07321459"
+	},
+	"devDependencies": {
+		"@tauri-apps/api": "^1.5.1",
+		"@tauri-apps/cli": "^1.5.6"
 	}
 }
