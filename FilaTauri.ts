@@ -62,7 +62,7 @@ class FilaTauri extends Fila
 	}
 	
 	/** */
-	async writeText(text: string)
+	async writeText(text: string, options?: Fila.IWriteTextOptions)
 	{
 		try
 		{
@@ -70,7 +70,9 @@ class FilaTauri extends Fila
 			if (!await up.exists())
 				await up.writeDirectory();
 			
-			await this.fs.writeTextFile(this.path, text);
+			await this.fs.writeTextFile(this.path, text, {
+				append: options?.append
+			});
 		}
 		catch (e)
 		{
@@ -467,6 +469,7 @@ namespace FilaTauri
 		 */
 		mode?: number;
 	}
+	
+	declare const module: any;
+	typeof module === "object" && Object.assign(module.exports, { FilaTauri });
 }
-
-typeof module === "object" && Object.assign(module.exports, { FilaTauri });
