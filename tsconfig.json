@@ -26,6 +26,6 @@
 		"**/+build/**/*.ts",
 	],
 	"references": [
-		{ "path": "../Fila" },
+		{ "path": "../Fila" }
 	]
 }

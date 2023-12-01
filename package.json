@@ -1,14 +1,38 @@
 {
-	"name": "fila-tauri",
+	"name": "fila-node",
 	"author": "Paul Gordon",
-	"description": "Tauri backend for Fila",
-	"version": "1.0.0",
-	"main": "fila-tauri.js",
-	"scripts": {
-		"tauri": "tauri",
-		"bundle": "tsc -p tsconfig.release.json && terser ./+build/fila-tauri.debug.js > ./+build/fila-tauri.min.js"
-	},
+	"description": "Tauri 1.x backend for Fila",
 	"license": "MIT",
+	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/scrollapp/fila-tauri"
+	},
+	"bugs": {
+		"url": "https://github.com/scrollapp/fila-tauri/issues"
+	},
+	"main": "fila-tauri.js",
+	"browser": "fila-tauri.js",
+	"module": "fila-tauri.esm.js",
+	"types": "fila-tauri.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"LICENSE.txt",
+		"readme.md",
+		"fila-tauri.js",
+		"fila-tauri.min.js",
+		"fila-tauri.d.ts",
+		"fila-tauri.d.ts.map",
+		"fila-tauri.esm.js"
+	],
+	"scripts": {
+		"test": "exit 0",
+		"esm": "sed 's/\\/\\/+ //' ./+build/fila-tauri.js > ./+build/fila-tauri.esm.js",
+		"bundle": "tsc -p tsconfig.release.json && terser ./+build/fila-tauri.debug.js > ./+build/fila-tauri.min.js && npm run esm",
+		"release": "npm run bundle && cd ./+build && cp ../package.json ./package.json && np"
+	},
 	"dependencies": {
 		"tauri-plugin-fs-watch-api": "github:tauri-apps/tauri-plugin-fs-watch#1f460724c82cc7e0ab38cf05443fe00e07321459"
 	},

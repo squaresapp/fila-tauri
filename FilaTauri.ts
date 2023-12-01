@@ -469,7 +469,17 @@ namespace FilaTauri
 		 */
 		mode?: number;
 	}
-	
-	declare const module: any;
-	typeof module === "object" && Object.assign(module.exports, { FilaTauri });
 }
+
+//@ts-ignore CommonJS compatibility
+typeof module === "object" && Object.assign(module.exports, { FilaTauri });
+
+// ES module compatibility
+declare module "@scrollapp/fila-tauri"
+{
+	const __export: { FilaTauri: typeof FilaTauri };
+	export = __export;
+}
+
+// The comment and + prefix is removed during npm run bundle
+//+ export { FilaTauri }
