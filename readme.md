@@ -1,3 +1,7 @@
-# Fila Backend For Tauri
+# Fila Backend For Tauri 1.x
 
-Readme coming
+Installation:
+
+```
+npm install fila-core fila-tauri
+```
