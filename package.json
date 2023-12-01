@@ -1,5 +1,5 @@
 {
-	"name": "fila-node",
+	"name": "fila-tauri",
 	"author": "Paul Gordon",
 	"description": "Tauri 1.x backend for Fila",
 	"license": "MIT",
