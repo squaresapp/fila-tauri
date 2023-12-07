@@ -475,7 +475,7 @@ namespace FilaTauri
 typeof module === "object" && Object.assign(module.exports, { FilaTauri });
 
 // ES module compatibility
-declare module "@scrollapp/fila-tauri"
+declare module "fila-tauri"
 {
 	const __export: { FilaTauri: typeof FilaTauri };
 	export = __export;
