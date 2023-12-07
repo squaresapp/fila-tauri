@@ -31,7 +31,7 @@
 		"test": "exit 0",
 		"esm": "sed 's/\\/\\/+ //' ./+build/fila-tauri.js > ./+build/fila-tauri.esm.js",
 		"bundle": "tsc -p tsconfig.release.json && terser ./+build/fila-tauri.debug.js > ./+build/fila-tauri.min.js && npm run esm",
-		"release": "npm run bundle && cd ./+build && cp ../package.json ./package.json && np"
+		"release": "npm run bundle && cd ./+build && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
 	},
 	"dependencies": {
 		"fila-core": "^1.0.1",
